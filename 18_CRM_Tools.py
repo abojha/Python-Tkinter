@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import mysql.connector
+import csv
 
 
 
@@ -63,6 +64,12 @@ my_cursor.execute("ALTER TABLE customers ADD (\
 #     print(thing)
 
 # Functions
+#
+def functionAddToCart(result):
+    with open("customer.csv", "a") as f:
+        w = csv.writer(f, dialect='excel')
+        for record in result:
+            w.writerow(record)
 # function to clear all fields
 def functionClearFields():
     firstNameBox.delete(0, END)
@@ -91,6 +98,26 @@ def functionAddCustomer():
     #Commit the changes to the database
     mydb.commit()
     functionClearFields()
+
+def functionListCustomers():
+    ListCustomerQuery = Tk()
+    ListCustomerQuery.title("List Of Customers")
+    ListCustomerQuery.geometry("800x600")
+
+    # Query the Database
+    my_cursor.execute("SELECT * FROM customers")
+    result = my_cursor.fetchall()
+    for index, x in enumerate(result):
+        num = 0
+        for y in x:
+            lookupLabel = Label(ListCustomerQuery, text=y)
+            lookupLabel.grid(row=index, column=num)
+            num+=1
+    csv_button = Button(ListCustomerQuery, text="Add to CSV", command = lambda: functionAddToCart(result))
+    csv_button.grid(row=index+1, column=0)
+
+
+
 
 
 # Create A Label
@@ -163,8 +190,9 @@ addCustomerButton.grid(row=15, column=0, padx=10, pady=10)
 clearFieldsButton = Button(root, text="Clear Fields",command=functionClearFields)
 clearFieldsButton.grid(row=15, column=1)
 
-my_cursor.execute("SELECT * FROM customers")
-result = my_cursor.fetchall()
-for x in result:
-    print(x)
+# list customers Button
+listCustomerButton = Button(root, text = "Customers", command=functionListCustomers)
+listCustomerButton.grid(row=16, column=0, sticky=W, padx=10)
+
+
 root.mainloop()
