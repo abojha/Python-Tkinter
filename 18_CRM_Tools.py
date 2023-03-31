@@ -2,6 +2,7 @@ from tkinter import *
 from PIL import ImageTk, Image
 import mysql.connector
 import csv
+from tkinter import ttk
 
 
 
@@ -99,6 +100,7 @@ def functionAddCustomer():
     mydb.commit()
     functionClearFields()
 
+# function to List all Customers
 def functionListCustomers():
     ListCustomerQuery = Tk()
     ListCustomerQuery.title("List Of Customers")
@@ -116,7 +118,187 @@ def functionListCustomers():
     csv_button = Button(ListCustomerQuery, text="Add to CSV", command = lambda: functionAddToCart(result))
     csv_button.grid(row=index+1, column=0)
 
+    
 
+# Search Customers
+def functionSearchCustomers():
+    SearchCustomerQuery = Tk()
+    SearchCustomerQuery.title("Search Customer")
+    SearchCustomerQuery.geometry("1200x600")
+
+    def functionUpdate():
+        sql_command = """UPDATE customers SET  first_name = %s, last_name = %s, zipcode =  %s, price_paid = %s, user_id = %s, email = %s, address_1 = %s, address_2 = %s, city = %s, state = %s, country = %s, phone = %s, payment_method = %s, discount_code = %s WHERE user_id = %s"""
+
+        first_name =  firstNameBox2.get()
+        last_name =  lastNameBox2.get()
+        address1 =  address1Box2.get()
+        address2 =  address2Box2.get()
+        city =  cityBox2.get()
+        state = stateBox2.get()
+        zipcode =  zipcodeBox2.get()
+        country =  countryBox2.get()
+        phone =  phoneBox2.get()
+        email =  emailBox2.get()
+        username =  usernameBox2.get()
+        payment =  paymentMethodBox2.get()
+        discount = discountCodeBox2.get()
+        price =   PricePaidBox2.get() 
+
+        inputs = (first_name, last_name, zipcode, price, username, email, address1, address2, city, state, country, phone, payment, discount, username)
+        my_cursor.execute(sql_command, inputs)
+        mydb.commit()
+
+        SearchCustomerQuery.destroy()
+    # Edit Now
+    def functionEditNow(ref, index):
+
+        sql2 = "SELECT * FROM customers WHERE user_id = %s"
+        # sql = "SELECT * FROM customers WHERE last_name = %s"
+        name2 = (ref, ) 
+        result2 = my_cursor.execute(sql2, name2)
+        result2 = my_cursor.fetchall()
+
+        print(result2)
+        index += 4
+        # Create  Main Form to Enter Customer Data
+        firstNameLabel2 = Label(SearchCustomerQuery, text="First Name").grid(row=index+1, column=0, sticky=W, padx=10)
+        lastNameLabel2 = Label(SearchCustomerQuery, text="Last Name").grid(row=index+2, column=0, sticky=W, padx=10)
+        address1Label2 = Label(SearchCustomerQuery, text="Address 1").grid(row=index+3, column=0, sticky=W, padx=10)
+        address2Label2 = Label(SearchCustomerQuery, text="Address 2").grid(row=index+4, column=0, sticky=W, padx=10)
+        cityLabel2 = Label(SearchCustomerQuery, text="City").grid(row=index+5, column=0, sticky=W, padx=10)
+        stateLabel2 = Label(SearchCustomerQuery, text="State").grid(row=index+6, column=0, sticky=W, padx=10)
+        zipcodeLabel2 = Label(SearchCustomerQuery, text="Zip Code").grid(row=index+7, column=0, sticky=W, padx=10)
+        countryLabel2 = Label(SearchCustomerQuery, text="Country").grid(row=index+8, column=0, sticky=W, padx=10)
+        phoneLabel2 = Label(SearchCustomerQuery, text="Phone").grid(row=index+9, column=0, sticky=W, padx=10)
+        emailLabel2 = Label(SearchCustomerQuery, text="Email").grid(row=index+10, column=0, sticky=W, padx=10)
+        usernameLabel2 = Label(SearchCustomerQuery, text="username").grid(row=index+11, column=0, sticky=W, padx=10)
+        paymentMethodLabel2 = Label(SearchCustomerQuery, text="Payment Method").grid(row=index+12, column=0, sticky=W, padx=10)
+        discountCodeLabel2 = Label(SearchCustomerQuery, text="Discount Method").grid(row=index+13, column=0, sticky=W, padx=10)
+        pricePaidLabel2 = Label(SearchCustomerQuery, text="Price Paid").grid(row=index+14, column=0, sticky=W, padx=10)
+
+        # Create Entry Box
+        global firstNameBox2
+        firstNameBox2 = Entry(SearchCustomerQuery)
+        firstNameBox2.grid(row=index+1, column=1, pady=5)
+        firstNameBox2.insert(0, result2[0][0])
+
+        global lastNameBox2
+        lastNameBox2 = Entry(SearchCustomerQuery)
+        lastNameBox2.grid(row=index+2, column=1, pady=5)
+        lastNameBox2.insert(0, result2[0][1])
+
+        global address1Box2
+        address1Box2 = Entry(SearchCustomerQuery)
+        address1Box2.grid(row=index+3, column=1, pady=5)
+        address1Box2.insert(0, result2[0][6])
+
+        global address2Box2
+        address2Box2 = Entry(SearchCustomerQuery)
+        address2Box2.grid(row=index+4, column=1, pady=5)
+        address2Box2.insert(0, result2[0][7])
+
+        global cityBox2
+        cityBox2 = Entry(SearchCustomerQuery)
+        cityBox2.grid(row=index+5, column=1, pady=5)
+        cityBox2.insert(0, result2[0][8])
+
+        global stateBox2
+        stateBox2 = Entry(SearchCustomerQuery)
+        stateBox2.grid(row=index+6, column=1, pady=5)
+        stateBox2.insert(0, result2[0][9])
+
+        global zipcodeBox2
+        zipcodeBox2 = Entry(SearchCustomerQuery)
+        zipcodeBox2.grid(row=index+7, column=1, pady=5)
+        zipcodeBox2.insert(0, result2[0][2])
+        
+        global countryBox2
+        countryBox2 = Entry(SearchCustomerQuery)
+        countryBox2.grid(row=index+8, column=1, pady=5)
+        countryBox2.insert(0, result2[0][10])
+
+        global  phoneBox2
+        phoneBox2 = Entry(SearchCustomerQuery)
+        phoneBox2.grid(row=index+9, column=1, pady=5)
+        phoneBox2.insert(0, result2[0][11])
+
+        global emailBox2
+        emailBox2 = Entry(SearchCustomerQuery)
+        emailBox2.grid(row=index+10, column=1, pady=5)
+        emailBox2.insert(0, result2[0][5])
+
+        global usernameBox2
+        usernameBox2 = Entry(SearchCustomerQuery)
+        usernameBox2.grid(row=index+11, column=1, pady=5)
+        usernameBox2.insert(0, result2[0][4])
+
+        global paymentMethodBox2
+        paymentMethodBox2 = Entry(SearchCustomerQuery)
+        paymentMethodBox2.grid(row=index+12, column=1, pady=5)
+        paymentMethodBox2.insert(0, result2[0][12])
+
+        global discountCodeBox2
+        discountCodeBox2 = Entry(SearchCustomerQuery)
+        discountCodeBox2.grid(row=index+13, column=1, pady=5)
+        discountCodeBox2.insert(0, result2[0][13])
+
+        global  PricePaidBox2
+        PricePaidBox2 = Entry(SearchCustomerQuery)
+        PricePaidBox2.grid(row=index+14, column=1, pady=5)
+        PricePaidBox2.insert(0, result2[0][3])
+
+        buttonSaveRecord = Button(SearchCustomerQuery, text="Update Record", command=functionUpdate)
+        buttonSaveRecord.grid(row = index+15, column=0, padx=10)
+
+
+    def functionSearchNow():
+        selected = drop.get()
+        sql = ""
+        if selected == "Search by ...":
+            test = Label(SearchCustomerQuery, text="Hey you forgot to pick a drop down selection")
+            test.grid(row=3, column=0)
+        if selected == "Last Name":
+            sql = "SELECT * FROM customers WHERE last_name = %s"
+        if selected == "Email Address":
+            sql = "SELECT * FROM customers WHERE email = %s"
+        if selected == "Customer ID":
+            sql = "SELECT * FROM customers WHERE user_id = %s"
+
+        searched = EntrySearchBox.get()
+        # sql = "SELECT * FROM customers WHERE last_name = %s"
+        name = (searched, ) 
+        result = my_cursor.execute(sql, name)
+        result = my_cursor.fetchall()
+
+        if not result:
+            result = "Record Not Found ... "
+
+        for index, x in enumerate(result):
+            num = 0
+            id_reference = str(x[4])
+            editButton = Button(SearchCustomerQuery, text="Edit" + id_reference, command=lambda: functionEditNow(id_reference, index))
+            editButton.grid(row=index+3, column=num)
+            for y in x:
+                labelSearched = Label(SearchCustomerQuery, text=y)
+                labelSearched.grid(row=index+3, column=num+1)
+                num+=1
+
+    # Entry Box to Search Customer
+    EntrySearchBox = Entry(SearchCustomerQuery)
+    EntrySearchBox.grid(row=0, column=1, padx=10, pady=10)
+
+    # Label Box to Search to Customer
+    labelSearch = Label(SearchCustomerQuery, text="Search")
+    labelSearch.grid(row=0, column=0, padx=10, pady=10)
+
+    # Search Button
+    buttonSearch = Button(SearchCustomerQuery, text="Search Now", command=functionSearchNow)
+    buttonSearch.grid(row=1, column=0, padx=10)
+
+    # Drop Down Box
+    drop = ttk.Combobox(SearchCustomerQuery, value=["Search by ...", "Last Name", "Email Address","Customer ID"])
+    drop.current(0)
+    drop.grid(row=0, column=2)
 
 
 
@@ -193,6 +375,10 @@ clearFieldsButton.grid(row=15, column=1)
 # list customers Button
 listCustomerButton = Button(root, text = "Customers", command=functionListCustomers)
 listCustomerButton.grid(row=16, column=0, sticky=W, padx=10)
+
+# Search Customer Button
+searchCustomerButton = Button(root, text = "Search/Edit", command=functionSearchCustomers)
+searchCustomerButton.grid(row=16, column=1, sticky=W, padx=10)
 
 
 root.mainloop()
