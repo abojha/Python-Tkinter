@@ -15,12 +15,25 @@ def functionFileNew():
     newFileFrame.pack(fill="both", expand=1)
     label = Label(newFileFrame, text="You clicked a New file").pack()
 
+    # to see what the winfo_children return
+    child_label = Label(newFileFrame, text=newFileFrame.winfo_children())
+    child_label.pack(pady=10)
+
+
 def functionEditCut():
     functionHideAllFrames()
     cutEditFrame.pack(fill="both", expand=1)
 
+    
 # Hide all frame function
 def functionHideAllFrames():
+    # Loop through all the children and delete them
+    for widget in newFileFrame.winfo_children():
+        widget.destroy()
+    # Loop through all the children and delete them
+    for widget in cutEditFrame.winfo_children():
+        widget.destroy()
+
     newFileFrame.pack_forget()
     cutEditFrame.pack_forget()
 
